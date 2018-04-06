@@ -6,7 +6,7 @@ There are already solution like [WiFiManager-ESP32](https://github.com/zhouhan01
 But I wanted to test the possibility to setup the ESP32's WiFi over Bluetooth Low Energy.    
 This repository covers the source code for the Android device. The source code for the ESP32 application are in the [ESP32_WiFi_BLE_ESP32](https://bitbucket.org/beegee1962/esp32_wifi_ble_esp32) repository.    
 
-Detailed information about this project are on my [website](http://desire.giesecke.tk) 
+Detailed information about this project are on my [website](https://desire.giesecke.tk/index.php/2018/04/06/esp32-wifi-setup-over-ble/) 
 
 ## Development platform
 PlatformIO, but as the whole code is in a single file it can be easily copied into a .ino file and used with the Arduino IDE
