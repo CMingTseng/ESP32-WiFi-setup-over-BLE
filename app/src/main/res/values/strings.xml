@@ -1,19 +1,34 @@
 <resources>
     <string name="app_name">ESP32WiFiBLE</string>
-    <string name="ble_not_supported">BLE is not supported</string>
+    <string name="title_devices">Bluetooth Device Scan</string>
+
+    <string name="error_no_bluetooth">Bluetooth is not supported</string>
+    <string name="error_no_ble">BLE is not supported</string>
+    <string name="error_credentials">WiFi credentials incomplete!</string>
+    <string name="error_sending">Error sending to device: %1$s</string>
+    <string name="error_no_connection">Not connected</string>
+    <string name="error_user_reject">"If you do not switch on Bluetooth this app doesn't work!"</string>
+
     <string name="no_data">No data</string>
-    <string name="title_devices">BLE Device Scan</string>
-    <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
+    <string name="empty_response">"Empty response"</string>
     <string name="unknown_device">Unknown device</string>
+    <string name="manual_pair_req">Please pair the device first</string>
+
+    <string name="get_config">Reading ESP32 configuration</string>
     <string name="update_config">Writing new configuration</string>
     <string name="erase_config">Erasing ESP32 configuration</string>
-    <string name="error_credentials">WiFi credentials incomplete!</string>
-    <string name="empty_response">"Empty response"</string>
+    <string name="reset_device">Reset ESP32</string>
+
+    <string name="type_bt">"Bluetooth Serial"</string>
+    <string name="type_ble">"BLE"</string>
+    <string name="type_mix">"Bluetooth Serial + BLE"</string>
+    <string name="type_unknown">"Unknown type"</string>
 
     <!-- Button items -->
-    <string name="write_button">Send WiFi config</string>
-    <string name="read_button">Get WiFi config</string>
-    <string name="reset_button">Erase WiFi config</string>
+    <string name="write_button">Send config</string>
+    <string name="read_button">Get config</string>
+    <string name="erase_button">Erase config</string>
+    <string name="reset_button">Reset ESP32</string>
     <string name="sel_num_ap">Enable two AP</string>
 
     <!-- Text input -->
@@ -26,5 +41,5 @@
     <string name="menu_connect">Connect</string>
     <string name="menu_disconnect">Disconnect</string>
     <string name="menu_scan">Scan</string>
-    <string name="menu_stop">Stop</string>
+    <string name="menu_stop">Stop Scan</string>
 </resources>

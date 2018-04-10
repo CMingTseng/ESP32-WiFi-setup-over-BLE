@@ -1,6 +1,7 @@
 package tk.giesecke.esp32wifible;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,22 +25,25 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static tk.giesecke.esp32wifible.DeviceScanActivity.EXTRAS_DEVICE;
+import static tk.giesecke.esp32wifible.DeviceScanActivity.EXTRAS_DEVICE_ADDRESS;
+import static tk.giesecke.esp32wifible.DeviceScanActivity.EXTRAS_DEVICE_NAME;
+import static tk.giesecke.esp32wifible.XorCoding.xorCode;
+
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
  * and display GATT services and characteristics supported by the device.The Activity
  * communicates with {@code BluetoothLeService}, which in turn interacts with the
  * Bluetooth LE API.
  */
-public class DeviceControlActivity extends Activity {
-	private final static String TAG = DeviceControlActivity.class.getSimpleName();
-
-	public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
-	public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+public class DeviceControlBLEActivity extends Activity {
+	private final static String TAG = "ESP32WIFI_BLE_CTRL";
 
 	private TextView mDataField;
 	private String mDeviceAddress;
 	private BluetoothLeService mBluetoothLeService;
 	private boolean mConnected = false;
+	private BluetoothDevice mmDevice;
 
 	private String ssidPrimString = "";
 	private String pwPrimString = "";
@@ -118,10 +122,16 @@ public class DeviceControlActivity extends Activity {
 						thisMenu.findItem(R.id.menu_connect).setActionView(null);
 						String data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
 						if (data != null) {
+							// Decode the data
+							byte[] decodedData = xorCode(mmDevice.getName(),data.getBytes(),data.length());
+							String finalData = new String(decodedData);
+
+							displayData("Received:\n--\n" + data + "\n--\n" + finalData);
+
 							// Get stored WiFi credentials from the received data
 							JSONObject receivedConfigJSON;
 							try {
-								receivedConfigJSON = new JSONObject(data);
+								receivedConfigJSON = new JSONObject(finalData);
 								if (receivedConfigJSON.has("ssidPrim")) {
 									ssidPrimString = receivedConfigJSON.getString("ssidPrim");
 									ssidPrimET.setText(ssidPrimString);
@@ -141,9 +151,6 @@ public class DeviceControlActivity extends Activity {
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
-							// Display the received data
-							data = "Received:\n" + data;
-							displayData(data);
 						}
 						break;
 				}
@@ -163,6 +170,7 @@ public class DeviceControlActivity extends Activity {
 		final Intent intent = getIntent();
 		String mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
 		mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+		mmDevice = intent.getParcelableExtra(EXTRAS_DEVICE);
 
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -216,7 +224,7 @@ public class DeviceControlActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.gatt_services, menu);
+		getMenuInflater().inflate(R.menu.control, menu);
 		if (mConnected) {
 			menu.findItem(R.id.menu_connect).setVisible(false);
 			menu.findItem(R.id.menu_disconnect).setVisible(true);
@@ -325,7 +333,10 @@ public class DeviceControlActivity extends Activity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			mBluetoothLeService.writeCustomCharacteristic(wifiCreds.toString());
+			byte[] decodedData = xorCode(mmDevice.getName()
+							,wifiCreds.toString().getBytes()
+							,wifiCreds.toString().length());
+			mBluetoothLeService.writeCustomCharacteristic(new String(decodedData));
 			displayData(getResources().getString(R.string.update_config));
 		}
 	}
@@ -349,7 +360,29 @@ public class DeviceControlActivity extends Activity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			mBluetoothLeService.writeCustomCharacteristic(wifiCreds.toString());
+			byte[] decodedData = xorCode(mmDevice.getName()
+							,wifiCreds.toString().getBytes()
+							,wifiCreds.toString().length());
+			mBluetoothLeService.writeCustomCharacteristic(new String(decodedData));
+			displayData(getResources().getString(R.string.erase_config));
+		}
+	}
+
+	@SuppressWarnings("unused")
+	public void onClickReset(View v){
+		thisMenu.findItem(R.id.menu_connect).setActionView(R.layout.progress_bar);
+		if(mBluetoothLeService != null) {
+			// Create JSON object
+			JSONObject wifiCreds = new JSONObject();
+			try {
+				wifiCreds.put("reset", true);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			byte[] decodedData = xorCode(mmDevice.getName()
+							,wifiCreds.toString().getBytes()
+							,wifiCreds.toString().length());
+			mBluetoothLeService.writeCustomCharacteristic(new String(decodedData));
 			displayData(getResources().getString(R.string.erase_config));
 		}
 	}

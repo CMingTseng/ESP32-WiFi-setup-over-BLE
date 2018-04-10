@@ -26,7 +26,7 @@ import java.util.UUID;
  * given Bluetooth LE device.
  */
 public class BluetoothLeService extends Service {
-	private final static String TAG = BluetoothLeService.class.getSimpleName();
+	private final static String TAG = "ESP32WIFI_BLE";
 
 	private BluetoothManager mBluetoothManager;
 	private BluetoothAdapter mBluetoothAdapter;
@@ -37,15 +37,15 @@ public class BluetoothLeService extends Service {
 	private final String wifiUUID = "00005555-ead2-11e7-80c1-9a214cf093ae";
 
 	public final static String ACTION_GATT_CONNECTED =
-					"com.example.bluetooth.le.ACTION_GATT_CONNECTED";
+					"ACTION_GATT_CONNECTED";
 	public final static String ACTION_GATT_DISCONNECTED =
-					"com.example.bluetooth.le.ACTION_GATT_DISCONNECTED";
+					"ACTION_GATT_DISCONNECTED";
 	public final static String ACTION_GATT_SERVICES_DISCOVERED =
-					"com.example.bluetooth.le.ACTION_GATT_SERVICES_DISCOVERED";
+					"ACTION_GATT_SERVICES_DISCOVERED";
 	public final static String ACTION_DATA_AVAILABLE =
-					"com.example.bluetooth.le.ACTION_DATA_AVAILABLE";
+					"ACTION_DATA_AVAILABLE";
 	public final static String EXTRA_DATA =
-					"com.example.bluetooth.le.EXTRA_DATA";
+					"EXTRA_DATA";
 
 	// Implements callback methods for GATT events that the app cares about.For example,
 	// connection change and services discovered.
