@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static tk.giesecke.esp32wifible.DeviceScanActivity.EXTRAS_DEVICE;
 import static tk.giesecke.esp32wifible.DeviceScanActivity.EXTRAS_DEVICE_NAME;
@@ -128,17 +129,11 @@ public class DeviceControlBTSerialActivity extends Activity {
 		super.onResume();
 
 		//Fired when connection is established and also fired when onResume is called if a connection is already established.
-		LocalBroadcastManager.getInstance(this)
-						.registerReceiver(bluetoothConnectReceiver
-										, new IntentFilter(BluetoothSerial.BLUETOOTH_CONNECTED));
+		LocalBroadcastManager.getInstance(this).registerReceiver(bluetoothConnectReceiver, new IntentFilter(BluetoothSerial.BLUETOOTH_CONNECTED));
 		//Fired when the connection is lost
-		LocalBroadcastManager.getInstance(this)
-						.registerReceiver(bluetoothDisconnectReceiver
-										, new IntentFilter(BluetoothSerial.BLUETOOTH_DISCONNECTED));
+		LocalBroadcastManager.getInstance(this).registerReceiver(bluetoothDisconnectReceiver, new IntentFilter(BluetoothSerial.BLUETOOTH_DISCONNECTED));
 		//Fired when connection can not be established.
-		LocalBroadcastManager.getInstance(this)
-						.registerReceiver(bluetoothFailedReceiver
-										, new IntentFilter(BluetoothSerial.BLUETOOTH_FAILED));
+		LocalBroadcastManager.getInstance(this).registerReceiver(bluetoothFailedReceiver, new IntentFilter(BluetoothSerial.BLUETOOTH_FAILED));
 
 		//onResume calls connect, it is safe
 		//to call connect even when already connected

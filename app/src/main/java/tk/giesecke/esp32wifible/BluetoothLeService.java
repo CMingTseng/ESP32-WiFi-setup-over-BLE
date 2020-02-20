@@ -1,7 +1,6 @@
 package tk.giesecke.esp32wifible;
 
 import android.app.Service;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -27,7 +26,6 @@ import java.util.UUID;
  */
 public class BluetoothLeService extends Service {
 	private final static String TAG = "ESP32WIFI_BLE";
-
 	private BluetoothManager mBluetoothManager;
 	private BluetoothAdapter mBluetoothAdapter;
 	private String mBluetoothDeviceAddress;
@@ -36,16 +34,11 @@ public class BluetoothLeService extends Service {
 	private final String serviceUUID = "0000aaaa-ead2-11e7-80c1-9a214cf093ae";
 	private final String wifiUUID = "00005555-ead2-11e7-80c1-9a214cf093ae";
 
-	public final static String ACTION_GATT_CONNECTED =
-					"ACTION_GATT_CONNECTED";
-	public final static String ACTION_GATT_DISCONNECTED =
-					"ACTION_GATT_DISCONNECTED";
-	public final static String ACTION_GATT_SERVICES_DISCOVERED =
-					"ACTION_GATT_SERVICES_DISCOVERED";
-	public final static String ACTION_DATA_AVAILABLE =
-					"ACTION_DATA_AVAILABLE";
-	public final static String EXTRA_DATA =
-					"EXTRA_DATA";
+	public final static String ACTION_GATT_CONNECTED = "ACTION_GATT_CONNECTED";
+	public final static String ACTION_GATT_DISCONNECTED = "ACTION_GATT_DISCONNECTED";
+	public final static String ACTION_GATT_SERVICES_DISCOVERED = "ACTION_GATT_SERVICES_DISCOVERED";
+	public final static String ACTION_DATA_AVAILABLE = "ACTION_DATA_AVAILABLE";
+	public final static String EXTRA_DATA = "EXTRA_DATA";
 
 	// Implements callback methods for GATT events that the app cares about.For example,
 	// connection change and services discovered.
@@ -58,8 +51,7 @@ public class BluetoothLeService extends Service {
 				broadcastUpdate(intentAction, status);
 				Log.i(TAG, "Connected to GATT server.");
 				// Attempts to discover services after successful connection.
-				Log.i(TAG, "Attempting to start service discovery:" +
-								mBluetoothGatt.discoverServices());
+				Log.i(TAG, "Attempting to start service discovery:" + mBluetoothGatt.discoverServices());
 
 			} else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
 				intentAction = ACTION_GATT_DISCONNECTED;
@@ -74,9 +66,7 @@ public class BluetoothLeService extends Service {
 		public void onServicesDiscovered(BluetoothGatt gatt, int status) {
 			if (status == BluetoothGatt.GATT_SUCCESS) {
 				broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED, status);
-
 				StringBuilder serviceDiscovery;
-
 				List<BluetoothGattService> gattServices = mBluetoothGatt.getServices();
 				Log.e("onServicesDiscovered", "Services count: "+gattServices.size());
 				serviceDiscovery = new StringBuilder("Found " + gattServices.size() + " services\n");
@@ -86,32 +76,26 @@ public class BluetoothLeService extends Service {
 					serviceDiscovery.append("Service uuid ").append(serviceUUID).append("\n");
 				}
 				broadcastUpdate(serviceDiscovery.toString());
-
 			} else {
 				Log.w(TAG, "onServicesDiscovered received: " + status);
 			}
 		}
 
 		@Override
-		public void onCharacteristicRead(BluetoothGatt gatt,
-																		 BluetoothGattCharacteristic characteristic,
-																		 int status) {
+		public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 			if (status == BluetoothGatt.GATT_SUCCESS) {
 				broadcastUpdate(characteristic, status);
 			}
 		}
 
 		@Override
-		public void onCharacteristicWrite(BluetoothGatt gatt,
-																			BluetoothGattCharacteristic characteristic,
-																			int status) {
+		public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
 			if (status == BluetoothGatt.GATT_SUCCESS) {
 				readCustomCharacteristic();
 			}
 		}
 		@Override
-		public void onCharacteristicChanged(BluetoothGatt gatt,
-																				BluetoothGattCharacteristic characteristic) {
+		public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
 			broadcastUpdate(characteristic, 0);
 		}
 	};
@@ -207,8 +191,7 @@ public class BluetoothLeService extends Service {
 		}
 
 // Previously connected device.Try to reconnect.
-		if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
-						&& mBluetoothGatt != null) {
+		if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress) && mBluetoothGatt != null) {
 			Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
 			return mBluetoothGatt.connect();
 		}
@@ -259,15 +242,13 @@ public class BluetoothLeService extends Service {
 			return;
 		}
 		/*check if the service is available on the device*/
-		BluetoothGattService mCustomService = mBluetoothGatt.
-						getService(UUID.fromString(serviceUUID));
+		BluetoothGattService mCustomService = mBluetoothGatt.getService(UUID.fromString(serviceUUID));
 		if(mCustomService == null){
 			Log.w(TAG, "Custom BLE Service not found");
 			return;
 		}
 		/*get the read characteristic from the service*/
-		BluetoothGattCharacteristic mReadCharacteristic = mCustomService.
-						getCharacteristic(UUID.fromString(wifiUUID));
+		BluetoothGattCharacteristic mReadCharacteristic = mCustomService.getCharacteristic(UUID.fromString(wifiUUID));
 		if(!mBluetoothGatt.readCharacteristic(mReadCharacteristic)){
 			Log.w(TAG, "Failed to read characteristic");
 			return;
@@ -282,15 +263,13 @@ public class BluetoothLeService extends Service {
 			return;
 		}
 		/*check if the service is available on the device*/
-		BluetoothGattService mCustomService = mBluetoothGatt
-						.getService(UUID.fromString(serviceUUID));
+		BluetoothGattService mCustomService = mBluetoothGatt.getService(UUID.fromString(serviceUUID));
 		if(mCustomService == null){
 			Log.w(TAG, "Custom BLE Service not found");
 			return;
 		}
 		/*get the read characteristic from the service*/
-		BluetoothGattCharacteristic mWriteCharacteristic = mCustomService
-						.getCharacteristic(UUID.fromString(wifiUUID));
+		BluetoothGattCharacteristic mWriteCharacteristic = mCustomService.getCharacteristic(UUID.fromString(wifiUUID));
 		mWriteCharacteristic.setValue(wifiCredentials);
 		if(!mBluetoothGatt.writeCharacteristic(mWriteCharacteristic)){
 			Log.w(TAG, "Failed to write characteristic");

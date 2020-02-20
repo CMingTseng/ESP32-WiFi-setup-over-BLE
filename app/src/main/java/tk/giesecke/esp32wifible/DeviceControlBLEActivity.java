@@ -105,9 +105,7 @@ public class DeviceControlBLEActivity extends Activity {
 						}
 						if (result == 133) { // connection failed!!!!
 							Log.e(TAG, "Server connection failed");
-							Toast.makeText(getApplicationContext()
-											, "Server connection failed\nRetry to connect again\nOr try to reset the ESP32"
-											, Toast.LENGTH_LONG).show();
+							Toast.makeText(getApplicationContext(), "Server connection failed\nRetry to connect again\nOr try to reset the ESP32", Toast.LENGTH_LONG).show();
 						}
 						mConnected = false;
 						invalidateOptionsMenu();
@@ -291,27 +289,21 @@ public class DeviceControlBLEActivity extends Activity {
 			JSONObject wifiCreds = new JSONObject();
 			try {
 				if (ssidPrimString.equals("")) {
-					Toast.makeText(getApplicationContext()
-									, "Missing primary SSID entry"
-									, Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "Missing primary SSID entry", Toast.LENGTH_LONG).show();
 					displayData(getResources().getString(R.string.error_credentials));
 					return;
 				} else {
 					wifiCreds.put("ssidPrim", ssidPrimString);
 				}
 				if (pwPrimString.equals("")) {
-					Toast.makeText(getApplicationContext()
-									, "Missing primary password entry"
-									, Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "Missing primary password entry", Toast.LENGTH_LONG).show();
 					displayData(getResources().getString(R.string.error_credentials));
 					return;
 				} else {
 					wifiCreds.put("pwPrim", pwPrimString);
 				}
 				if (ssidSecString.equals("") && doubleApEnabled) {
-					Toast.makeText(getApplicationContext()
-									, "Missing secondary SSID entry"
-									, Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "Missing secondary SSID entry", Toast.LENGTH_LONG).show();
 					displayData(getResources().getString(R.string.error_credentials));
 					return;
 				} else if (ssidSecString.equals("") && !doubleApEnabled) {
@@ -320,9 +312,7 @@ public class DeviceControlBLEActivity extends Activity {
 					wifiCreds.put("ssidSec", ssidSecString);
 				}
 				if (pwSecString.equals("") && doubleApEnabled) {
-					Toast.makeText(getApplicationContext()
-									, "Missing secondary password entry"
-									, Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), "Missing secondary password entry", Toast.LENGTH_LONG).show();
 					displayData(getResources().getString(R.string.error_credentials));
 					return;
 				} else if (pwSecString.equals("") && !doubleApEnabled) {
@@ -333,9 +323,7 @@ public class DeviceControlBLEActivity extends Activity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			byte[] decodedData = xorCode(mmDevice.getName()
-							,wifiCreds.toString().getBytes()
-							,wifiCreds.toString().length());
+			byte[] decodedData = xorCode(mmDevice.getName(), wifiCreds.toString().getBytes(), wifiCreds.toString().length());
 			mBluetoothLeService.writeCustomCharacteristic(new String(decodedData));
 			displayData(getResources().getString(R.string.update_config));
 		}
@@ -360,9 +348,7 @@ public class DeviceControlBLEActivity extends Activity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			byte[] decodedData = xorCode(mmDevice.getName()
-							,wifiCreds.toString().getBytes()
-							,wifiCreds.toString().length());
+			byte[] decodedData = xorCode(mmDevice.getName(), wifiCreds.toString().getBytes(), wifiCreds.toString().length());
 			mBluetoothLeService.writeCustomCharacteristic(new String(decodedData));
 			displayData(getResources().getString(R.string.erase_config));
 		}
@@ -379,9 +365,7 @@ public class DeviceControlBLEActivity extends Activity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			byte[] decodedData = xorCode(mmDevice.getName()
-							,wifiCreds.toString().getBytes()
-							,wifiCreds.toString().length());
+			byte[] decodedData = xorCode(mmDevice.getName(), wifiCreds.toString().getBytes(), wifiCreds.toString().length());
 			mBluetoothLeService.writeCustomCharacteristic(new String(decodedData));
 			displayData(getResources().getString(R.string.erase_config));
 		}
